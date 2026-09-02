@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Allow manual trigger from GitHub UI
   push:
     paths:
-      - 'scripts/sync_usda.py'
+      - 'scripts/**'
 
 jobs:
   sync:
@@ -23,9 +23,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run USDA Sync Script
+      - name: Install Playwright & Dependencies
         run: |
-          python3 scripts/sync_usda.py
+          pip install playwright beautifulsoup4
+          playwright install --with-deps chromium
+
+      - name: Run USDA Scraper with Real Chromium
+        run: |
+          python3 scripts/sync_playwright.py
 
       - name: Commit and Push Updated Recalls
         run: |
@@ -35,6 +40,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to USDA recalls."
           else
-            git commit -m "Automated update: latest USDA FSIS recall alerts [skip ci]"
+            git commit -m "Automated update: live USDA FSIS recalls via Playwright [skip ci]"
             git push
           fi
