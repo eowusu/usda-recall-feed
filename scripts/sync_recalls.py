@@ -3,8 +3,8 @@
 Comprehensive Multi-Agency Food Recall Ingestion Engine
 Ingests:
 1. FDA Immediate Press Releases & Public Safety Alerts (e.g. Panorama Produce Mangoes)
-2. FDA Official Enforcement Actions & iRES Reports (e.g. classified batches from openFDA)
-3. USDA FSIS Meat, Poultry & Processed Egg Recalls (e.g. Shanghai Ravioli Corporation)
+2. FDA Official Enforcement Actions & iRES Reports (e.g. Tofu recalls, classified batches)
+3. USDA FSIS Meat, Poultry & Processed Egg Recalls (e.g. Shanghai Ravioli, Indus Foods, BrucePac)
 """
 
 import json
@@ -195,6 +195,25 @@ def get_base_usda_recalls():
             "url": "https://www.fsis.usda.gov/recalls-alerts/shanghai-ravioli-corporation-recalls-not-ready-eat-frozen-buffalo-chicken-products"
         },
         {
+            "recall_number": "FSIS-RC-042-2024",
+            "product_description": "Ready-To-Eat Pickled Goat and Chicken Products",
+            "reason_for_recall": "Produced without benefit of federal inspection",
+            "recalling_firm": "Indus Foods LLC DBA Gangothri Foods",
+            "classification": "CLASS_I",
+            "product_quantity": "Approximately 5,000 pounds",
+            "distribution_pattern": "TX, CA, IL, NY, NJ, GA, NC, VA, FL",
+            "status": "Active",
+            "recall_initiation_date": "2024-11-20",
+            "report_date": "2024-11-20",
+            "city": "Dallas",
+            "state": "TX",
+            "country": "USA",
+            "code_info": "Packed in glass jars and plastic pouches without inspection mark",
+            "voluntary_mandated": "Voluntary: Firm Initiated",
+            "agency": "USDA",
+            "url": "https://www.fsis.usda.gov/recalls-alerts/indus-foods-llc-dba-gangothri-foods-recalls-ready-eat-pickled-goat-and-chicken"
+        },
+        {
             "recall_number": "FSIS-RC-044-2024",
             "product_description": "Ready-To-Eat Pork and Poultry Products",
             "reason_for_recall": "Produced without benefit of federal inspection and possible Listeria contamination",
@@ -264,7 +283,7 @@ def main():
     fda_enforcement = parse_openfda_enforcement()
     print(f"Ingested {len(fda_enforcement)} official FDA enforcement & iRES reports.")
 
-    # 3. Ingest USDA FSIS notices (e.g. Shanghai Ravioli Corporation)
+    # 3. Ingest USDA FSIS notices (e.g. Shanghai Ravioli, Indus Foods)
     usda_recalls = get_base_usda_recalls()
     print(f"Ingested {len(usda_recalls)} USDA FSIS recall entries.")
 
