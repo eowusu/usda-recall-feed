@@ -3,7 +3,7 @@
 Comprehensive Multi-Agency Food Recall Ingestion Engine
 Ingests:
 1. FDA Immediate Press Releases & Public Safety Alerts (e.g. Panorama Produce Mangoes)
-2. FDA Official Enforcement Actions & iRES Reports (e.g. Hodo Chili Crisp Tofu, classified batches)
+2. FDA Official Enforcement Actions & iRES Reports (e.g. classified batches from openFDA)
 3. USDA FSIS Meat, Poultry & Processed Egg Recalls (e.g. Shanghai Ravioli Corporation)
 """
 
@@ -176,25 +176,6 @@ def parse_openfda_enforcement():
 def get_base_usda_recalls():
     return [
         {
-            "recall_number": "FDA-IRES-222000",
-            "product_description": "Hodo Chili Crisp Lightly Fried Tofu",
-            "reason_for_recall": "Potential misbranding and undeclared allergens",
-            "recalling_firm": "Hodo Foods",
-            "classification": "CLASS_I",
-            "product_quantity": "See FDA notice",
-            "distribution_pattern": "Nationwide",
-            "status": "Ongoing",
-            "recall_initiation_date": "2026-08-26",
-            "report_date": "2026-08-26",
-            "city": "Oakland",
-            "state": "CA",
-            "country": "USA",
-            "code_info": "Batch and lot numbers on package",
-            "voluntary_mandated": "Voluntary: Firm Initiated",
-            "agency": "FDA",
-            "url": "https://www.accessdata.fda.gov/scripts/ires/index.cfm?Product=222000"
-        },
-        {
             "recall_number": "FSIS-RC-005-2026",
             "product_description": "Not-Ready-To-Eat Frozen Buffalo Chicken Products",
             "reason_for_recall": "Misbranding and undeclared allergens (egg, soy, and wheat)",
@@ -283,13 +264,13 @@ def main():
     fda_enforcement = parse_openfda_enforcement()
     print(f"Ingested {len(fda_enforcement)} official FDA enforcement & iRES reports.")
 
-    # 3. Ingest USDA FSIS notices & featured FDA iRES entries (e.g. Hodo Chili Crisp Tofu, Shanghai Ravioli)
-    base_recalls = get_base_usda_recalls()
-    print(f"Ingested {len(base_recalls)} USDA FSIS and curated iRES recall entries.")
+    # 3. Ingest USDA FSIS notices (e.g. Shanghai Ravioli Corporation)
+    usda_recalls = get_base_usda_recalls()
+    print(f"Ingested {len(usda_recalls)} USDA FSIS recall entries.")
 
     # Merge all unique by recall_number
     merged_map = {}
-    for r in base_recalls:
+    for r in usda_recalls:
         merged_map[r["recall_number"]] = r
     for r in fda_enforcement:
         merged_map[r["recall_number"]] = r
