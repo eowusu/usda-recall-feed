@@ -1,0 +1,40 @@
+name: Sync USDA FSIS Recalls
+
+on:
+  schedule:
+    - cron: '0 */3 * * *' # Run every 3 hours
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+  push:
+    paths:
+      - 'scripts/sync_usda.py'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run USDA Sync Script
+        run: |
+          python3 scripts/sync_usda.py
+
+      - name: Commit and Push Updated Recalls
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add usda_recalls.json
+          if git diff --staged --quiet; then
+            echo "No changes to USDA recalls."
+          else
+            git commit -m "Automated update: latest USDA FSIS recall alerts [skip ci]"
+            git push
+          fi
